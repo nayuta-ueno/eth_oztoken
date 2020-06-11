@@ -1,24 +1,70 @@
-const PROVIDER = 'http://127.0.0.1:9545';
 const CONTRACT_ADDR = '<YOUR CONTRACT ADDRESS>';
+const SEND_ADDR = '<sender address>';
+const PRIVATE_KEY = '<privateKey of SEND_ADDR>';
+const RECV_ADDR = 'receiver address';
+const ENDPOINT = 'http://127.0.0.1:9545';
 
 const fs = require('fs');
-var Web3 = require('web3');
-var web3 = new Web3();
-web3.setProvider(new web3.providers.HttpProvider(PROVIDER));
+const  Web3 = require('web3');
+
+let web3 = new Web3();
+web3.setProvider(new web3.providers.HttpProvider(ENDPOINT));
 
 const fn = async () => {
-	console.log('Protocol Version: ' + await web3.eth.getProtocolVersion());
-	console.log('gas Price: ' + await web3.eth.getGasPrice());
-	console.log('balance of contract_addr=' + await web3.eth.getBalance(CONTRACT_ADDR));
+    let chainId = await web3.eth.getChainId();
+    console.log('chainId=' + chainId);
 
-	//ABI
+    let gasPrice = await web3.eth.getGasPrice();
+    console.log('gasPrice=' + gasPrice);
+
 	const ABI = JSON.parse(fs.readFileSync('./build/contracts/OzToken.json', 'utf8'))['abi'];
-	//web3.eth.defaultAccount = web3.eth.accounts[0];
-	var oztoken = new web3.eth.Contract(ABI, CONTRACT_ADDR);
+	let oztoken = new web3.eth.Contract(ABI, CONTRACT_ADDR);
 
-	//token balance
-	let accounts = await web3.eth.getAccounts();
-	let balance_token = await oztoken.methods.balanceOf(accounts[0]).call();
-	console.log('token=' + balance_token);
+	let balance = await oztoken.methods.balanceOf(SEND_ADDR).call();
+	console.log('balance(sender)=' + balance);
+
+	balance = await oztoken.methods.balanceOf(RECV_ADDR).call();
+	console.log('balance(receiver)=' + balance);
+
+    let method = oztoken.methods.transfer(RECV_ADDR, 100);
+	let code = await method.encodeABI();
+    let gas = await method.estimateGas({from: SEND_ADDR});
+    console.log('estimateGas=' + gas);
+
+	nonce = await web3.eth.getTransactionCount(SEND_ADDR);
+	console.log('nonce=' + nonce);
+
+	// transaction
+    const tx = {
+        nonce: nonce,
+        chainId: chainId,
+        to: CONTRACT_ADDR,
+        value: '0',
+        data: code,
+        gasPrice: gasPrice,
+        gas: gas + 50000
+    };
+    signtx = await web3.eth.accounts.signTransaction(tx, PRIVATE_KEY);
+    console.log('signed_tx= ' + signtx.rawTransaction);
+
+    // send transaction
+    try {
+        web3.eth.sendSignedTransaction(signtx.rawTransaction)
+        .on('transactionHash', (txhash) => {
+            console.log('txhash=' + txhash);
+        })
+        .on('receipt', (receipt) => {
+            console.log('receipt=' + JSON.stringify(receipt));
+        })
+        // .on('confirmation', (conf, receipt) => {
+        //     console.log('conf1=' + conf);
+        //     console.log('conf-receipt1=' + JSON.stringify(receipt));
+        // })
+        .on('error', (err) => {
+            console.log('err=' + err);
+        });
+    } catch (err) {
+        console.log('err sendSignedTransaction=' + err);
+    }
 }
 fn();
