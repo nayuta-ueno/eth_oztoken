@@ -18,6 +18,13 @@
  *
  */
 
+// npm install @truffle/hdwallet-provider
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+
+// "address":"0x87C018EF78005f118C53fa9cadf0a4Fd367a77A9"
+const PRIVATEKEY = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff";
+
+
 // const HDWalletProvider = require('truffle-hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
@@ -47,6 +54,12 @@ module.exports = {
     //  port: 8545,            // Standard Ethereum port (default: none)
     //  network_id: "*",       // Any network (default: none)
     // },
+    dev: {
+      provider: () => new HDWalletProvider(PRIVATEKEY, "http://127.0.0.1:21010"),
+      network_id: "*",
+      websockets: false,
+      gasPrice: 0
+    },
 
     // Another network with more advanced options...
     // advanced: {
