@@ -1,0 +1,28 @@
+{
+  "name": "eth_oztoken",
+  "version": "1.0.0",
+  "description": "## prepare",
+  "main": "mytest.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.1.0",
+    "@truffle/hdwallet-provider": "^1.0.36",
+    "web3": "^1.2.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nayuta-ueno/eth_oztoken.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nayuta-ueno/eth_oztoken/issues"
+  },
+  "homepage": "https://github.com/nayuta-ueno/eth_oztoken#readme"
+}
