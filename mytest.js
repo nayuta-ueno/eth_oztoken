@@ -72,6 +72,7 @@ const fn = async () => {
             // })
             .on('error', (err) => {
                 console.log('err=' + err);
+                web3.currentProvider.connection.close();
             });
     } catch (err) {
         console.log('err=' + err);

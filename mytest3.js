@@ -25,6 +25,7 @@ async function getContract(contractName, chainId) {
 
 async function signTx(nonce, contr, key) {
     const code = await contr.method.encodeABI();
+    const gas = await contr.method.estimateGas({ from: SEND_ADDR });
     console.log('code=' + code);
     const tx = {
         nonce: nonce,
@@ -33,7 +34,7 @@ async function signTx(nonce, contr, key) {
         value: '0',
         data: code,
         gasPrice: 0,
-        gas: 500000
+        gas: gas
     };
     console.log('tx=%o', tx);
     signtx = await web3.eth.accounts.signTransaction(tx, key);
@@ -47,7 +48,7 @@ const fn = async () => {
         const contrToken = await getContract('OzToken', chainId);
         let nonce = await web3.eth.getTransactionCount(SEND_ADDR);
 
-        contrToken.method = contrToken.contract.methods.sendRevert();
+        contrToken.method = contrToken.contract.methods.transfer(RECV_ADDR, 100);
         const signtx = await signTx(nonce, contrToken, PRIVATE_SENDKEY);
         console.log('signtx=%o', signtx);
         web3.eth.sendSignedTransaction(signtx.rawTransaction)
@@ -56,12 +57,15 @@ const fn = async () => {
             })
             .on('receipt', async (receipt) => {
                 console.log('receipt=' + JSON.stringify(receipt));
+                web3.currentProvider.connection.close();
             })
             .on('error', (err) => {
                 console.log('err=' + err);
+                web3.currentProvider.connection.close();
             });
     } catch (err) {
         console.log('err: ' + err);
+        web3.currentProvider.connection.close();
     }
 }
 fn();
