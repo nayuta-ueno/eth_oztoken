@@ -55,7 +55,7 @@ module.exports = {
     //  network_id: "*",       // Any network (default: none)
     // },
     dev: {
-      provider: () => new HDWalletProvider(PRIVATEKEY, "http://127.0.0.1:21010"),
+      provider: () => new HDWalletProvider(PRIVATEKEY, "http://127.0.0.1:8545"),
       network_id: "*",
       websockets: false,
       gasPrice: 0
@@ -94,6 +94,8 @@ module.exports = {
   mocha: {
     // timeout: 100000
   },
+
+  plugins: ["solidity-coverage"],
 
   // Configure your compilers
   compilers: {

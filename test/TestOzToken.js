@@ -1,16 +1,15 @@
-const UToken = artifacts.require("./OzToken.sol");
-const truffleAssert = require('truffle-assertions');
+const OzToken = artifacts.require("OzToken");
 
 contract("OzToken test", async accounts => {
   it("supply amount1", async () => {
-    let instance = await UToken.deployed();
+    let instance = await OzToken.deployed();
 
     let supply = await instance.totalSupply();
     assert.equal(supply, 200000, "supply");
   });
 
   it("deploy amount", async () => {
-    let instance = await UToken.deployed();
+    let instance = await OzToken.deployed();
 
     let owner = accounts[0];
     let balance = await instance.balanceOf(owner);
@@ -18,7 +17,7 @@ contract("OzToken test", async accounts => {
   });
 
   it("direct transfer", async () => {
-    let instance = await UToken.deployed();
+    let instance = await OzToken.deployed();
 
     let owner = accounts[0];
     let payee = accounts[1];
@@ -33,7 +32,7 @@ contract("OzToken test", async accounts => {
   });
 
   it("approve transfer from owner", async () => {
-    let instance = await UToken.deployed();
+    let instance = await OzToken.deployed();
 
     let owner = accounts[0];
     let payer = accounts[0];
@@ -62,7 +61,7 @@ contract("OzToken test", async accounts => {
 
   // おそらくownerのコンテキスト？になっていて、別の人がapprove()するテストができない
   // it("approve transfer from payer", async () => {
-  //   let instance = await UToken.deployed();
+  //   let instance = await OzToken.deployed();
 
   //   let owner = accounts[0];
   //   let payer = accounts[1];
@@ -92,7 +91,7 @@ contract("OzToken test", async accounts => {
   // });
 
   it("supply amount2", async () => {
-    let instance = await UToken.deployed();
+    let instance = await OzToken.deployed();
     let owner = accounts[0];
 
     let supply = await instance.totalSupply();
