@@ -4,13 +4,13 @@ const SEND_ADDR = '0x87C018EF78005f118C53fa9cadf0a4Fd367a77A9';
 const PRIVATE_SENDKEY = '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff';
 const RECV_ADDR = '0x40634a78307Cd0e773455F058715b636ad9d724B';
 const PRIVATE_RECVKEY = 'ffeeddccbbaa99887766554433221100ffeeddccbbaa99887766554433221100';
-const ENDPOINT = 'ws://127.0.0.1:21020';
+const ENDPOINT = 'http://127.0.0.1:8545';
 
 const fs = require('fs');
 const Web3 = require('web3');
 
 const web3 = new Web3();
-web3.setProvider(new web3.providers.WebsocketProvider(ENDPOINT));
+web3.setProvider(new web3.providers.HttpProvider(ENDPOINT));
 
 async function getContract(contractName, chainId) {
     const abiFileName = './build/contracts/' + contractName + '.json';
@@ -64,7 +64,6 @@ const fn = async () => {
             })
             .on('receipt', (receipt) => {
                 console.log('receipt=' + JSON.stringify(receipt));
-                web3.currentProvider.connection.close();
             })
             // .on('confirmation', (conf, receipt) => {
             //     console.log('conf1=' + conf);
@@ -72,11 +71,9 @@ const fn = async () => {
             // })
             .on('error', (err) => {
                 console.log('err=' + err);
-                web3.currentProvider.connection.close();
             });
     } catch (err) {
         console.log('err=' + err);
-        web3.currentProvider.connection.close();
     }
 }
 fn();
