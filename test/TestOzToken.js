@@ -1,4 +1,5 @@
 const OzToken = artifacts.require("OzToken");
+const TestCont = artifacts.require("TestCont");
 
 contract("OzToken test", async accounts => {
   it("supply amount1", async () => {
@@ -98,4 +99,10 @@ contract("OzToken test", async accounts => {
     assert.equal(supply, 200000, "supply");
   });
 
+  it("テスト用Solidity", async () => {
+    // TestCont.solを使う
+    let kk = await TestCont.new();
+    console.log(await kk.hello());
+    assert.equal((await kk.gets()).toString(), "400", "gets");
+  });
 });

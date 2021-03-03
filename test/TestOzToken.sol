@@ -9,14 +9,14 @@ contract TestOzToken {
     function testConstructor() public {
         OzToken oz = OzToken(DeployedAddresses.OzToken());
 
-        uint256 expected = 20000;
-        Assert.equal(oz.balanceOf(tx.origin), expected, "bad balance");
+        uint256 expected = 200000;
+        Assert.equal(oz.balanceOf(msg.sender), expected, "testConstructor");
     }
 
     function testConstructor2() public {
         OzToken oz = new OzToken(400);
 
         uint256 expected = 400;
-        Assert.equal(oz.balanceOf(tx.origin), expected, "bad balance");
+        Assert.equal(oz.balanceOf(address(this)), expected, "testConstructor2");
     }
 }
